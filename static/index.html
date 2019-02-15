@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>captcha</title>
+        <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <h2>captcha test</h2>
+        <hr>
+        <img src="" id="captcha_img" style="border: solid #000000 1px;padding: 5px">
+        <table>
+            <tr>
+                <td>CaptchaID:</td>
+                <td>
+                    <input type="text" id="captcha_id">
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Result:</td>
+                <td>
+                    <input type="text" id="result">
+                </td>
+                <td>
+                    <button id="ok_btn">OK</button>
+                </td>
+            </tr>
+        </table>
+        <script>
+            $().ready(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "/captcha",
+                    dataType: "json",
+                    success: function(data){
+                                console.log(data)
+                                $("#captcha_img").attr("src","data:image/png;base64,"+data.img)
+                                $("#captcha_id").val(data.captchaID)
+                            }
+                });
+                $("#ok_btn").click(function(){
+                    $.ajax({
+                        type: "POST",
+                        url: "/verify",
+                        data: {captcha_id:$("#captcha_id").val(), result:$("#result").val()},
+                        success: function(data){
+                                    alert(data.success)
+                                }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
